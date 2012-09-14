@@ -24,44 +24,42 @@ namespace Type
         private const string INPUT_WELCOME_TEXT = "Start typng...";
 
         private AutoComplete ac;
-        private Boolean isShowingWelcomeText;
+
+        private Boolean showingWelcomeText;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            string[] commands = { "done", "clear", "archive", "undo", "edit" };
-            ac = new AutoComplete(commands);
-
-            ShowWelcomeText();
+            string[] dict = { "make a sandwich", "pet a cat", "complain about loud religious service", "whore karma", "cycle to school" };
+            ac = new AutoComplete(dict);
         }
 
         private void ShowWelcomeText()
         {
-            if (!isShowingWelcomeText)
+            if (!showingWelcomeText)
             {
                 textBox1.Text = INPUT_WELCOME_TEXT;
                 textBox1.Foreground = Brushes.LightGray;
             }
-            isShowingWelcomeText = true;
+            showingWelcomeText = true;
         }
 
-        private void HideWelcomeText()
+        private void HideWelcomeText(string input)
         {
-            if (isShowingWelcomeText)
+            if (showingWelcomeText)
             {
-                string changedText = textBox1.Text;
-                string input = changedText.Substring(changedText.Length - 1);
                 textBox1.Text = input;
                 textBox1.Select(input.Length, 0);
                 textBox1.Foreground = Brushes.Black;
             }
-            isShowingWelcomeText = false;
+            showingWelcomeText = false;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
+            ShowWelcomeText();
+            textBox1.Focus();
         }
 
         private void textBox1_TextChanged(object sender, TextChangedEventArgs e)
@@ -72,7 +70,41 @@ namespace Type
             }
             else
             {
-                HideWelcomeText();
+                if (showingWelcomeText)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    foreach (var change in e.Changes)
+                    {
+                        int offset = change.Offset;
+                        int addedLength = change.AddedLength;
+                        if (addedLength > 0)
+                        {
+                            sb.Append(textBox1.Text.Substring(offset, addedLength));
+                        }
+                    }
+                    HideWelcomeText(sb.ToString());
+                }
+            }
+        }
+
+        private void textBox1_KeyUp(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Enter:
+                    //Should parse and process the command here.
+                    textBox1.Clear();
+                    break;
+
+                case Key.Tab:
+                    if (!showingWelcomeText)
+                    {
+                        string acText = textBox1.Text;
+                        acText += ac.CompleteToCommonPrefix(acText);
+                        textBox1.Text = acText;
+                        textBox1.Select(textBox1.Text.Length, 0);
+                    }
+                    break;
             }
         }
     }
