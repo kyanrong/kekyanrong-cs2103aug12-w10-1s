@@ -22,8 +22,11 @@ namespace Type
     public partial class MainWindow : Window
     {
         private const string INPUT_WELCOME_TEXT = "Start typng...";
+        private string[] COMMANDS_ACCEPTED = { "done", "archive", "undo", "edit", "clear" };
+        private const string COMMANDS_ESCAPE_TOKEN = ":";
 
-        private AutoComplete ac;
+        private AutoComplete commandsAutoComplete;
+        private Parser parser;
 
         private Boolean showingWelcomeText;
 
@@ -31,8 +34,8 @@ namespace Type
         {
             InitializeComponent();
 
-            string[] dict = { "make a sandwich", "pet a cat", "complain about loud religious service", "whore karma", "cycle to school" };
-            ac = new AutoComplete(dict);
+            commandsAutoComplete = new AutoComplete(COMMANDS_ACCEPTED);
+            parser = new Parser(COMMANDS_ESCAPE_TOKEN, COMMANDS_ACCEPTED);
         }
 
         private void ShowWelcomeText()
@@ -50,10 +53,15 @@ namespace Type
             if (showingWelcomeText)
             {
                 textBox1.Text = input;
-                textBox1.Select(input.Length, 0);
                 textBox1.Foreground = Brushes.Black;
+                MoveCursorToBack();
             }
             showingWelcomeText = false;
+        }
+
+        private void MoveCursorToBack()
+        {
+            textBox1.Select(textBox1.Text.Length, 0);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -99,13 +107,22 @@ namespace Type
                 case Key.Tab:
                     if (!showingWelcomeText)
                     {
-                        string acText = textBox1.Text;
-                        acText += ac.CompleteToCommonPrefix(acText);
-                        textBox1.Text = acText;
-                        textBox1.Select(textBox1.Text.Length, 0);
+                        if (parser.IsCommand(textBox1.Text))
+                        {
+                            string commandText = GetCommandWithoutPrefix(textBox1.Text);
+                            string acText = commandsAutoComplete.CompleteToCommonPrefix(commandText);
+                            textBox1.Text += acText;
+
+                            MoveCursorToBack();
+                        }
                     }
                     break;
             }
+        }
+
+        private string GetCommandWithoutPrefix(string text)
+        {
+            return (text.Substring(1));
         }
     }
 }
