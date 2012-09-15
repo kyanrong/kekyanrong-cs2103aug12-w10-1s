@@ -17,7 +17,7 @@ namespace Type
             this.tagEscapeToken = tagEscapeToken;
         }
 
-        public bool IsCommand(string text)
+        public bool IsNonImplicitCommand(string text)
         {
             string token = ExtractToken(text);
             return (token.StartsWith(commandEscapeToken));
@@ -54,9 +54,16 @@ namespace Type
             }
             else
             {
-                remaining = text.Substring(firstSpace);
+                remaining = text.Substring(firstSpace + 1); //hello w
             }
             return remaining;
+        }
+
+        public TodoCommand parseCommand(string text)
+        {
+            var placeholder = new TodoCommand();
+            placeholder.item = new TodoItem();
+            return placeholder;
         }
     }
 }

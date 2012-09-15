@@ -8,10 +8,9 @@ namespace Type
 {
     class TodoItem
     {
-        private int type { get; set; }
-        private string text { get; set; }
-        private StringCollection tags { get; set; }
-        private DateTime start { get; set; }
-        private DateTime end { get; set; }
+        public string text { get; set; }
+        public StringCollection tags { get; set; }
+        public DateTime start { get; set; }
+        public DateTime end { get; set; }
     }
 }

@@ -24,9 +24,14 @@ namespace Type
         private const string COMMANDS_ESCAPE_TOKEN = ":";
         private const string TAGS_ESCAPE_TOKEN = "#";
         private Key[] START_KEY_COMBINATION = { Key.LeftShift, Key.Space };
+        private const int COMMANDS_CLOSE_DELAY = 400;
 
         private AutoComplete commandsAutoComplete;
+        private AutoComplete tagsAutoComplete; //TODO
+        private AutoComplete tasksAutoComplete; //TODO
+
         private Parser parser;
+
         private ShortcutKeyHook globalHook;
 
         private Boolean isForeground;
@@ -38,6 +43,7 @@ namespace Type
 
             commandsAutoComplete = new AutoComplete(COMMANDS_ACCEPTED);
             parser = new Parser(COMMANDS_ESCAPE_TOKEN, TAGS_ESCAPE_TOKEN);
+
 
             globalHook = new ShortcutKeyHook(this, START_KEY_COMBINATION);
 
@@ -108,13 +114,16 @@ namespace Type
             {
                 case Key.Enter:
                     //Should parse and process the command here.
+                    parser.parseCommand(textBox1.Text);
                     textBox1.Clear();
+                    System.Threading.Thread.Sleep(COMMANDS_CLOSE_DELAY);
+                    HideWindow();
                     break;
 
                 case Key.Tab:
                     if (!showingWelcomeText)
                     {
-                        if (parser.IsCommand(textBox1.Text))
+                        if (parser.IsNonImplicitCommand(textBox1.Text))
                         {
                             string commandText = GetTokenWithoutPrefix(textBox1.Text);
                             string acText = commandsAutoComplete.CompleteToCommonPrefix(commandText);
