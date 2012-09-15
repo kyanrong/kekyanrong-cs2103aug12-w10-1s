@@ -24,7 +24,6 @@ namespace Type
         private const string COMMANDS_ESCAPE_TOKEN = ":";
         private const string TAGS_ESCAPE_TOKEN = "#";
         private Key[] START_KEY_COMBINATION = { Key.LeftShift, Key.Space };
-        private const int COMMANDS_CLOSE_DELAY = 400;
 
         private AutoComplete commandsAutoComplete;
         private AutoComplete tagsAutoComplete; //TODO
@@ -116,7 +115,6 @@ namespace Type
                     //Should parse and process the command here.
                     parser.parseCommand(textBox1.Text);
                     textBox1.Clear();
-                    System.Threading.Thread.Sleep(COMMANDS_CLOSE_DELAY);
                     HideWindow();
                     break;
 
@@ -171,6 +169,11 @@ namespace Type
                 this.Show();
                 isForeground = true;
             }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            globalHook.StopListening();
         }
     }
 }
