@@ -8,28 +8,25 @@ namespace Type
 {
     class Parser
     {
-        private StringCollection commands;
-        private StringCollection hashTags;
-        private StringCollection tasks;
-        private string escapeToken;
+        private string commandEscapeToken;
+        private string tagEscapeToken;
 
-        public Parser(string escapeToken, string[] acceptedCommands)
+        public Parser(string commandEscapeToken, string tagEscapeToken)
         {
-            this.escapeToken = escapeToken;
-            commands = new StringCollection();
-
-            InitCommandsCollection(acceptedCommands);
-        }
-
-        private void InitCommandsCollection(string[] acceptedCommands)
-        {
-            commands.AddRange(acceptedCommands);
+            this.commandEscapeToken = commandEscapeToken;
+            this.tagEscapeToken = tagEscapeToken;
         }
 
         public bool IsCommand(string text)
         {
             string token = ExtractToken(text);
-            return (token.StartsWith(escapeToken));
+            return (token.StartsWith(commandEscapeToken));
+        }
+
+        public bool IsTag(string text)
+        {
+            string token = ExtractToken(text);
+            return (token.StartsWith(tagEscapeToken));
         }
 
         private static string ExtractToken(string text)
@@ -45,6 +42,21 @@ namespace Type
                 token = text.Substring(0, firstSpace);
             }
             return token;
+        }
+
+        private static string RemoveToken(string text)
+        {
+            int firstSpace = text.IndexOf(' ');
+            string remaining;
+            if (firstSpace < 0)
+            {
+                remaining = "";
+            }
+            else
+            {
+                remaining = text.Substring(firstSpace);
+            }
+            return remaining;
         }
     }
 }

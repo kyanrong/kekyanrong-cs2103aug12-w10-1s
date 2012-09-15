@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Xofel.AutoComplete
+namespace Type
 {
     /// <summary>
     /// Provides functionality to suggest strings based on a query, and complete a partial query up to its common prefix.

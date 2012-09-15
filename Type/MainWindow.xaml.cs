@@ -12,8 +12,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using Xofel.AutoComplete;
-
 namespace Type
 {
     /// <summary>
@@ -24,6 +22,7 @@ namespace Type
         private const string INPUT_WELCOME_TEXT = "Start typng...";
         private string[] COMMANDS_ACCEPTED = { "done", "archive", "undo", "edit", "clear" };
         private const string COMMANDS_ESCAPE_TOKEN = ":";
+        private const string TAGS_ESCAPE_TOKEN = "#";
 
         private AutoComplete commandsAutoComplete;
         private Parser parser;
@@ -35,7 +34,7 @@ namespace Type
             InitializeComponent();
 
             commandsAutoComplete = new AutoComplete(COMMANDS_ACCEPTED);
-            parser = new Parser(COMMANDS_ESCAPE_TOKEN, COMMANDS_ACCEPTED);
+            parser = new Parser(COMMANDS_ESCAPE_TOKEN, TAGS_ESCAPE_TOKEN);
         }
 
         private void ShowWelcomeText()
@@ -109,18 +108,27 @@ namespace Type
                     {
                         if (parser.IsCommand(textBox1.Text))
                         {
-                            string commandText = GetCommandWithoutPrefix(textBox1.Text);
+                            string commandText = GetTokenWithoutPrefix(textBox1.Text);
                             string acText = commandsAutoComplete.CompleteToCommonPrefix(commandText);
                             textBox1.Text += acText;
 
                             MoveCursorToBack();
                         }
+                        else if (parser.IsTag(textBox1.Text))
+                        {
+                            //Autocomplete Tag
+
+                        }
                     }
+                    break;
+
+                case Key.Escape:
+                    this.Hide();
                     break;
             }
         }
 
-        private string GetCommandWithoutPrefix(string text)
+        private string GetTokenWithoutPrefix(string text)
         {
             return (text.Substring(1));
         }
