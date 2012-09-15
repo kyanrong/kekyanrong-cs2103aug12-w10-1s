@@ -23,10 +23,13 @@ namespace Type
         private string[] COMMANDS_ACCEPTED = { "done", "archive", "undo", "edit", "clear" };
         private const string COMMANDS_ESCAPE_TOKEN = ":";
         private const string TAGS_ESCAPE_TOKEN = "#";
+        private Key[] START_KEY_COMBINATION = { Key.LeftShift, Key.Space };
 
         private AutoComplete commandsAutoComplete;
         private Parser parser;
+        private ShortcutKeyHook globalHook;
 
+        private Boolean isForeground;
         private Boolean showingWelcomeText;
 
         public MainWindow()
@@ -35,6 +38,10 @@ namespace Type
 
             commandsAutoComplete = new AutoComplete(COMMANDS_ACCEPTED);
             parser = new Parser(COMMANDS_ESCAPE_TOKEN, TAGS_ESCAPE_TOKEN);
+
+            globalHook = new ShortcutKeyHook(this, START_KEY_COMBINATION);
+
+            isForeground = true;
         }
 
         private void ShowWelcomeText()
@@ -67,6 +74,7 @@ namespace Type
         {
             ShowWelcomeText();
             textBox1.Focus();
+            HideWindow();
         }
 
         private void textBox1_TextChanged(object sender, TextChangedEventArgs e)
@@ -119,11 +127,16 @@ namespace Type
                             //Autocomplete Tag
 
                         }
+                        else
+                        {
+                            //Autocomplete Task
+
+                        }
                     }
                     break;
 
                 case Key.Escape:
-                    this.Hide();
+                    HideWindow();
                     break;
             }
         }
@@ -131,6 +144,24 @@ namespace Type
         private string GetTokenWithoutPrefix(string text)
         {
             return (text.Substring(1));
+        }
+
+        private void HideWindow()
+        {
+            if (isForeground)
+            {
+                this.Hide();
+                isForeground = false;
+            }
+        }
+
+        public void ShowWindow()
+        {
+            if (!isForeground)
+            {
+                this.Show();
+                isForeground = true;
+            }
         }
     }
 }
