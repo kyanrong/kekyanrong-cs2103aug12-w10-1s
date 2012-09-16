@@ -39,12 +39,9 @@ namespace Type
         public MainWindow()
         {
             //Forcibly improve the user's life.
-            if (Type.Properties.Settings.Default.firstRun)
-            {
-                Embedder.Embed();
-                Type.Properties.Settings.Default.firstRun = false;
-                Type.Properties.Settings.Default.Save();
-            }
+#if (!DEBUG)
+            Embedder.EmbedOnFirstRun();
+#endif
 
             InitializeComponent();
 
