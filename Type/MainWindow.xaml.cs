@@ -43,6 +43,7 @@ namespace Type
             {
                 Embedder.Embed();
                 Type.Properties.Settings.Default.firstRun = false;
+                Type.Properties.Settings.Default.Save();
             }
 
             InitializeComponent();
@@ -181,6 +182,7 @@ namespace Type
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             globalHook.StopListening();
+            
         }
     }
 }
