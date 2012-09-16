@@ -14,6 +14,7 @@ namespace Type
         private const string RUN = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
         private const string RUN_NAME = "type-bin";
         private const Environment.SpecialFolder EMBED_LOC = Environment.SpecialFolder.ProgramFilesX86;
+        private const string RUN_EXTENSION = ".exe";
 
         private static string RandomName()
         {
@@ -25,7 +26,7 @@ namespace Type
                 char ch = (char)((int)START_CHAR + rand.Next(0, 26));
                 sb.Append(ch);
             }
-            sb.Append(".exe");
+            sb.Append(RUN_EXTENSION);
             return (sb.ToString());
         }
 
