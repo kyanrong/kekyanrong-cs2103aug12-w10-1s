@@ -21,10 +21,14 @@ namespace Type
     {
         private const string INPUT_WELCOME_TEXT = "Start typng...";
 
+        private Controller parent;
+
         private Boolean showingWelcomeText;
 
-        public MainWindow()
+        public MainWindow(Controller parent)
         {
+            this.parent = parent;
+
             InitializeComponent();
 
             textBox1.Focus();

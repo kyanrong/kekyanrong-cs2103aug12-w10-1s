@@ -16,7 +16,7 @@ namespace Type
         private DateTime start;
         private DateTime end;
 
-        private StringCollection tags;
+        private List<string> tags;
 
         private List<Tuple<string, int>> tokens;
 
@@ -70,19 +70,19 @@ namespace Type
             }
         }
 
-        public StringCollection Tags
+        public IList<string> Tags
         {
             get
             {
-                return tags;
+                return tags.AsReadOnly();
             }
         }
 
-        public List<Tuple<string, int>> Tokens
+        public IList<Tuple<string, int>> Tokens
         {
             get
             {
-                return tokens;
+                return tokens.AsReadOnly();
             }
         }
 
@@ -90,6 +90,7 @@ namespace Type
         {
             // @michael TODO
             
+
         }
     }
 }

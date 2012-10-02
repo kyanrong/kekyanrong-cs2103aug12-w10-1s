@@ -14,8 +14,10 @@ namespace Type
 
         public Controller()
         {
-            ui = new MainWindow();
+            ui = new MainWindow(this);
             globalHook = new ShortcutKeyHook(this, START_KEY_COMBINATION);
+
+            Task t;
         }
 
         ~Controller()
