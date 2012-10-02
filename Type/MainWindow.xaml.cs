@@ -20,38 +20,12 @@ namespace Type
     public partial class MainWindow : Window
     {
         private const string INPUT_WELCOME_TEXT = "Start typng...";
-        private string[] COMMANDS_ACCEPTED = { "done", "archive", "undo", "edit", "clear" };
-        private const string COMMANDS_ESCAPE_TOKEN = ":";
-        private const string TAGS_ESCAPE_TOKEN = "#";
-        private Key[] START_KEY_COMBINATION = { Key.LeftShift, Key.Space };
 
-        private AutoComplete commandsAutoComplete;
-        private AutoComplete tagsAutoComplete; //TODO
-        private AutoComplete tasksAutoComplete; //TODO
-
-        private Parser parser;
-
-        private ShortcutKeyHook globalHook;
-
-        private Boolean isForeground;
         private Boolean showingWelcomeText;
 
         public MainWindow()
         {
-            //Forcibly improve the user's life.
-#if (!DEBUG)
-            Embedder.EmbedOnFirstRun();
-#endif
-
             InitializeComponent();
-
-            commandsAutoComplete = new AutoComplete(COMMANDS_ACCEPTED);
-            parser = new Parser(COMMANDS_ESCAPE_TOKEN, TAGS_ESCAPE_TOKEN);
-
-
-            globalHook = new ShortcutKeyHook(this, START_KEY_COMBINATION);
-
-            isForeground = true;
         }
 
         private void ShowWelcomeText()
@@ -78,13 +52,6 @@ namespace Type
         private void MoveCursorToBack()
         {
             textBox1.Select(textBox1.Text.Length, 0);
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            ShowWelcomeText();
-            textBox1.Focus();
-            HideWindow();
         }
 
         private void textBox1_TextChanged(object sender, TextChangedEventArgs e)
@@ -118,37 +85,38 @@ namespace Type
             {
                 case Key.Enter:
                     //Should parse and process the command here.
-                    parser.parseCommand(textBox1.Text);
+                    
+
                     textBox1.Clear();
-                    HideWindow();
+                    this.Hide();
                     break;
 
                 case Key.Tab:
-                    if (!showingWelcomeText)
-                    {
-                        if (parser.IsNonImplicitCommand(textBox1.Text))
-                        {
-                            string commandText = GetTokenWithoutPrefix(textBox1.Text);
-                            string acText = commandsAutoComplete.CompleteToCommonPrefix(commandText);
-                            textBox1.Text += acText;
+                    //if (!showingWelcomeText)
+                    //{
+                    //    if (parser.IsNonImplicitCommand(textBox1.Text))
+                    //    {
+                    //        string commandText = GetTokenWithoutPrefix(textBox1.Text);
+                    //        string acText = commandsAutoComplete.CompleteToCommonPrefix(commandText);
+                    //        textBox1.Text += acText;
 
-                            MoveCursorToBack();
-                        }
-                        else if (parser.IsTag(textBox1.Text))
-                        {
-                            //Autocomplete Tag
+                    //        MoveCursorToBack();
+                    //    }
+                    //    else if (parser.IsTag(textBox1.Text))
+                    //    {
+                    //        //Autocomplete Tag
 
-                        }
-                        else
-                        {
-                            //Autocomplete Task
+                    //    }
+                    //    else
+                    //    {
+                    //        //Autocomplete Task
 
-                        }
-                    }
+                    //    }
+                    //}
                     break;
 
                 case Key.Escape:
-                    HideWindow();
+                    this.Hide();
                     break;
             }
         }
@@ -156,30 +124,6 @@ namespace Type
         private string GetTokenWithoutPrefix(string text)
         {
             return (text.Substring(1));
-        }
-
-        private void HideWindow()
-        {
-            if (isForeground)
-            {
-                this.Hide();
-                isForeground = false;
-            }
-        }
-
-        public void ShowWindow()
-        {
-            if (!isForeground)
-            {
-                this.Show();
-                isForeground = true;
-            }
-        }
-
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            globalHook.StopListening();
-            
         }
     }
 }

@@ -12,5 +12,11 @@ namespace Type
     /// </summary>
     public partial class App : Application
     {
+        private Controller app;
+
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            app = new Controller();
+        }
     }
 }

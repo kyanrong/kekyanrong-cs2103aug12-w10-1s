@@ -18,7 +18,7 @@ namespace Type
 
         private static Keys[] combination;
         private static int combinationIndex;
-        private static MainWindow parent;
+        private static Controller parent;
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
@@ -38,8 +38,7 @@ namespace Type
             using (Process curProcess = Process.GetCurrentProcess())
             using (ProcessModule curModule = curProcess.MainModule)
             {
-                return SetWindowsHookEx(WH_KEYBOARD_LL, proc,
-                    GetModuleHandle(curModule.ModuleName), 0);
+                return SetWindowsHookEx(WH_KEYBOARD_LL, proc, GetModuleHandle(curModule.ModuleName), 0);
             }
         }
 
@@ -57,7 +56,7 @@ namespace Type
                     combinationIndex++;
                     if (combinationIndex == (combination.Length))
                     {
-                        parent.ShowWindow();
+                        parent.ShowUi();
                         combinationIndex = 0;
                     }
                 }
@@ -69,7 +68,7 @@ namespace Type
             return CallNextHookEx(_hookID, nCode, wParam, lParam);
         }
 
-        public ShortcutKeyHook(MainWindow parent, Key[] combination)
+        public ShortcutKeyHook(Controller parent, Key[] combination)
         {
             ShortcutKeyHook.parent = parent;
 
