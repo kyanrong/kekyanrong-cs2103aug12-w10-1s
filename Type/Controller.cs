@@ -26,7 +26,6 @@ namespace Type
         public void ShowUi()
         {
             ui.Show();
-            ui.Focus();
         }
     }
 }

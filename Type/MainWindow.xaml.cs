@@ -26,6 +26,8 @@ namespace Type
         public MainWindow()
         {
             InitializeComponent();
+
+            textBox1.Focus();
         }
 
         private void ShowWelcomeText()
@@ -84,7 +86,7 @@ namespace Type
             switch (e.Key)
             {
                 case Key.Enter:
-                    //Should parse and process the command here.
+                    // @yanrong Should parse and process the command here.
                     
 
                     textBox1.Clear();
@@ -92,27 +94,9 @@ namespace Type
                     break;
 
                 case Key.Tab:
-                    //if (!showingWelcomeText)
-                    //{
-                    //    if (parser.IsNonImplicitCommand(textBox1.Text))
-                    //    {
-                    //        string commandText = GetTokenWithoutPrefix(textBox1.Text);
-                    //        string acText = commandsAutoComplete.CompleteToCommonPrefix(commandText);
-                    //        textBox1.Text += acText;
+                    // @yanrong Should autocomplete here
 
-                    //        MoveCursorToBack();
-                    //    }
-                    //    else if (parser.IsTag(textBox1.Text))
-                    //    {
-                    //        //Autocomplete Tag
 
-                    //    }
-                    //    else
-                    //    {
-                    //        //Autocomplete Task
-
-                    //    }
-                    //}
                     break;
 
                 case Key.Escape:
