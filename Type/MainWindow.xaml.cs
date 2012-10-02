@@ -104,10 +104,5 @@ namespace Type
                     break;
             }
         }
-
-        private string GetTokenWithoutPrefix(string text)
-        {
-            return (text.Substring(1));
-        }
     }
 }
