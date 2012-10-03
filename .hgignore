@@ -5,3 +5,5 @@ Type\obj\**
 *.exe
 *.manifest
 *.cache
+*.swp
+*.un~
